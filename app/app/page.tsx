@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { Analysis, Term } from "@/lib/analyze";
+import type { Insight } from "@/lib/insight";
 
 const SAMPLE_JD = `岗位职责：
 1. 负责智能硬件产品的功能测试、兼容性测试与回归测试；
@@ -35,6 +36,16 @@ function Chip({ term, tone }: { term: Term; tone: "ok" | "miss" | "nice" }) {
   );
 }
 
+function LevelBadge({ level }: { level: Insight["gaps"][number]["level"] }) {
+  const map = {
+    strong: { text: "有证据", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+    weak: { text: "证据弱", cls: "bg-amber-50 text-amber-700 border-amber-200" },
+    none: { text: "没证据", cls: "bg-rose-50 text-rose-700 border-rose-200" },
+  }[level];
+
+  return <span className={`rounded border px-1.5 py-0.5 text-[11px] ${map.cls}`}>{map.text}</span>;
+}
+
 export default function AnalyzePage() {
   const [jd, setJd] = useState("");
   const [resume, setResume] = useState("");
@@ -42,9 +53,25 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [insight, setInsight] = useState<Insight | null>(null);
+  const [insightMeta, setInsightMeta] = useState<{
+    model: string;
+    promptVersion: string;
+    durationMs: number;
+  } | null>(null);
+  const [insightLoading, setInsightLoading] = useState(false);
+  const [insightError, setInsightError] = useState("");
+
+  function resetInsight() {
+    setInsight(null);
+    setInsightMeta(null);
+    setInsightError("");
+  }
+
   async function run() {
     setLoading(true);
     setError("");
+    resetInsight();
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -62,6 +89,27 @@ export default function AnalyzePage() {
     }
   }
 
+  async function runInsight() {
+    setInsightLoading(true);
+    setInsightError("");
+    try {
+      const res = await fetch("/api/insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jd, resume }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(typeof data?.error === "string" ? data.error : "模型调用失败");
+      setInsight(data.insight as Insight);
+      setInsightMeta(data.meta);
+    } catch (e) {
+      setInsight(null);
+      setInsightError(e instanceof Error ? e.message : "模型调用失败");
+    } finally {
+      setInsightLoading(false);
+    }
+  }
+
   const pct = result ? Math.round(result.coverage * 100) : 0;
   const missing = result ? result.mustTerms.filter((t) => !t.covered) : [];
   const covered = result ? result.mustTerms.filter((t) => t.covered) : [];
@@ -72,12 +120,12 @@ export default function AnalyzePage() {
         <Link href="/" className="text-xs font-medium tracking-[0.2em] text-neutral-500">
           OFFERLAB
         </Link>
-        <span className="text-xs text-neutral-400">W1 · 关键词分析</span>
+        <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
       </div>
 
       <h1 className="mt-8 text-2xl font-semibold tracking-tight">粘贴 JD，先看清缺口</h1>
       <p className="mt-2 text-sm text-neutral-500">
-        左边贴岗位要求，右边贴你的简历。这一版只做确定性的关键词匹配，不调用模型。
+        左边贴岗位要求，右边贴你的简历。先跑关键词，再让模型判断证据强弱。
       </p>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -120,6 +168,7 @@ export default function AnalyzePage() {
           onClick={() => {
             setJd(SAMPLE_JD);
             setResume(SAMPLE_RESUME);
+            resetInsight();
           }}
           className="rounded-lg border border-neutral-200 px-4 py-2 text-sm text-neutral-600 transition hover:border-neutral-400"
         >
@@ -184,8 +233,100 @@ export default function AnalyzePage() {
 
           <p className="mt-8 border-t border-neutral-100 pt-4 text-xs leading-relaxed text-neutral-400">
             口径：只统计能写进 JD 硬性要求的词；「优先 / 加分」归入加分项。
-            同义词与技能等级判断需要模型，按路线图在 W2 接入。
+            关键词是确定性规则，同义词与证据强弱交给模型。
           </p>
+        </section>
+      )}
+
+      {result && (
+        <section className="mt-6 rounded-xl border border-neutral-200 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-medium text-neutral-800">模型解读</h2>
+              <p className="mt-1 text-xs text-neutral-500">
+                判断每条要求有没有证据、强弱、以及怎么补。会把 JD 和简历发给你配置的模型服务。
+              </p>
+            </div>
+            <button
+              onClick={runInsight}
+              disabled={insightLoading || !resume.trim()}
+              className="rounded-lg border border-neutral-900 px-4 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-900 hover:text-white disabled:cursor-not-allowed disabled:border-neutral-200 disabled:text-neutral-400"
+            >
+              {insightLoading ? "解读中…" : insight ? "重新解读" : "让模型解读"}
+            </button>
+          </div>
+
+          {!resume.trim() && (
+            <p className="mt-4 text-xs text-neutral-400">先贴一段简历，模型才有东西可判。</p>
+          )}
+
+          {insightError && (
+            <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+              {insightError}
+            </div>
+          )}
+
+          {insight && (
+            <div className="mt-6 space-y-6">
+              <p className="text-base font-medium text-neutral-900">{insight.verdict}</p>
+
+              {insight.strengths.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-neutral-500">站得住的优势</h3>
+                  <ul className="mt-2 space-y-2">
+                    {insight.strengths.map((s) => (
+                      <li key={s.point} className="text-sm">
+                        <span className="text-neutral-900">{s.point}</span>
+                        <span className="ml-2 text-xs text-neutral-500">— {s.evidence}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {insight.gaps.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-neutral-500">逐条判证</h3>
+                  <div className="mt-2 divide-y divide-neutral-100">
+                    {insight.gaps.map((g) => (
+                      <div key={g.term} className="py-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-sm font-medium text-neutral-900">{g.term}</span>
+                          <LevelBadge level={g.level} />
+                          <span className="rounded border border-neutral-200 px-1.5 py-0.5 text-[11px] text-neutral-600">
+                            {g.action}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-neutral-600">{g.reason}</p>
+                        <p className="mt-1 text-xs leading-relaxed text-neutral-500">建议：{g.suggestion}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {insight.semanticHits.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium text-neutral-500">关键词没命中、但语义命中</h3>
+                  <ul className="mt-2 space-y-1.5">
+                    {insight.semanticHits.map((s) => (
+                      <li key={s.requirement} className="text-sm text-neutral-700">
+                        {s.requirement}
+                        <span className="ml-2 text-xs text-neutral-500">← {s.evidence}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {insightMeta && (
+                <p className="border-t border-neutral-100 pt-3 text-[11px] text-neutral-400">
+                  {insightMeta.model} · prompt {insightMeta.promptVersion} ·{" "}
+                  {(insightMeta.durationMs / 1000).toFixed(1)}s · 只依据你贴的简历，不补事实
+                </p>
+              )}
+            </div>
+          )}
         </section>
       )}
     </main>
