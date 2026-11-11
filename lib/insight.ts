@@ -36,7 +36,20 @@ export function parseInsight(text: string): Insight {
     const issue = result.error.issues[0];
     throw new LLMError(`模型输出不符合结构：${issue?.path.join(".") || "未知字段"} ${issue?.message ?? ""}`);
   }
-  return result.data;
+
+  const data = result.data;
+  // 模型偶尔把已满足的要求也塞进 gaps（还标 strong），这里兜一层：
+  // 已满足的归 strengths，不占缺口位。
+  const seen = new Set<string>();
+  const gaps = data.gaps.filter((gap) => {
+    if (gap.level === "strong") return false;
+    const key = gap.term.trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return { ...data, gaps };
 }
 
 /**

@@ -63,4 +63,22 @@ describe("parseInsight", () => {
   it("结构不对时报出字段名", () => {
     expect(() => parseInsight(JSON.stringify({ verdict: "" }))).toThrow(/verdict/);
   });
+
+  it("丢掉 level=strong 的缺口（已满足的不该占缺口位）", () => {
+    const withStrong = {
+      ...VALID,
+      gaps: [
+        { ...VALID.gaps[0] },
+        { term: "2 年经验", level: "strong", reason: "已满足", action: "补不了", suggestion: "无" },
+      ],
+    };
+    const parsed = parseInsight(JSON.stringify(withStrong));
+    expect(parsed.gaps).toHaveLength(1);
+    expect(parsed.gaps[0].term).toBe("接口测试");
+  });
+
+  it("同一 term 只保留一条", () => {
+    const dup = { ...VALID, gaps: [VALID.gaps[0], { ...VALID.gaps[0], reason: "重复" }] };
+    expect(parseInsight(JSON.stringify(dup)).gaps).toHaveLength(1);
+  });
 });
