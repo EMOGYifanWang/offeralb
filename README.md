@@ -24,6 +24,18 @@ npm run build
 
 不需要 Docker，不需要数据库服务，不需要 API key。
 
+### 配置模型（可选）
+
+不配也能跑关键词分析；要用「模型解读」，把 key 写进 `.env.local`：
+
+```bash
+cp .env.example .env.local
+# 然后填 DEEPSEEK_API_KEY=sk-...
+```
+
+默认走 `https://api.deepseek.com/v1` + `deepseek-chat`，任何 OpenAI 兼容服务都能换
+（改 `LLM_BASE_URL` / `LLM_MODEL`）。key 只在服务端读取，不会发到浏览器。
+
 ## W1 做了什么
 
 粘贴一段 JD 和一段简历文本，输出：
@@ -43,6 +55,7 @@ npm run build
 | 阶段 | 内容 |
 |---|---|
 | W1 | 关键词覆盖 + 缺口（当前） |
+| W2 | 模型解读：逐条判证据强弱、给补齐动作（已完成，待真实 key 验证） |
 | W2 | 官网 4 屏、岗位队列、事实库导入与确认 |
 | W3 | 简历定制（选材 → 改写 → diff → PDF）、`npm run eval` |
 | W4 | 面试包、投递看板、README 与部署文档 |
