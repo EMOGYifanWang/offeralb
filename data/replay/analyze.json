@@ -1,0 +1,185 @@
+{
+  "coverage": 0.6666666666666666,
+  "coveredMust": 6,
+  "totalMust": 9,
+  "mustTerms": [
+    {
+      "term": "兼容性测试",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "兼容性测试",
+        "兼容性"
+      ],
+      "covered": false
+    },
+    {
+      "term": "接口测试",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "接口测试",
+        "API 测试",
+        "API测试"
+      ],
+      "covered": false
+    },
+    {
+      "term": "缺陷管理",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "缺陷管理",
+        "缺陷跟踪",
+        "bug 管理",
+        "bug管理"
+      ],
+      "covered": false
+    },
+    {
+      "term": "测试用例",
+      "kind": "must",
+      "hits": 2,
+      "source": "dict",
+      "aliases": [
+        "测试用例",
+        "用例设计",
+        "用例"
+      ],
+      "covered": true
+    },
+    {
+      "term": "功能测试",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "功能测试",
+        "功能性测试"
+      ],
+      "covered": true
+    },
+    {
+      "term": "回归测试",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "回归测试",
+        "回归"
+      ],
+      "covered": true
+    },
+    {
+      "term": "自动化测试",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "自动化测试",
+        "自动化"
+      ],
+      "covered": true
+    },
+    {
+      "term": "Linux",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "Linux",
+        "Shell"
+      ],
+      "covered": true
+    },
+    {
+      "term": "Python",
+      "kind": "must",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "Python"
+      ],
+      "covered": true
+    }
+  ],
+  "niceTerms": [
+    {
+      "term": "Postman",
+      "kind": "nice",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "Postman"
+      ],
+      "covered": false
+    },
+    {
+      "term": "JMeter",
+      "kind": "nice",
+      "hits": 1,
+      "source": "dict",
+      "aliases": [
+        "JMeter"
+      ],
+      "covered": true
+    }
+  ],
+  "requirements": [
+    {
+      "text": "负责智能硬件产品的功能测试、兼容性测试与回归测试",
+      "kind": "must"
+    },
+    {
+      "text": "编写测试用例并执行",
+      "kind": "must"
+    },
+    {
+      "text": "跟踪缺陷直至关闭",
+      "kind": "must"
+    },
+    {
+      "text": "参与自动化测试脚本的编写与维护",
+      "kind": "must"
+    },
+    {
+      "text": "本科及以上学历",
+      "kind": "must"
+    },
+    {
+      "text": "2 年以上软件测试经验",
+      "kind": "must"
+    },
+    {
+      "text": "熟悉测试用例设计方法",
+      "kind": "must"
+    },
+    {
+      "text": "掌握缺陷管理流程",
+      "kind": "must"
+    },
+    {
+      "text": "熟悉 Linux 常用命令",
+      "kind": "must"
+    },
+    {
+      "text": "能使用 Python 编写简单脚本",
+      "kind": "must"
+    },
+    {
+      "text": "有接口测试经验",
+      "kind": "must"
+    },
+    {
+      "text": "了解 Postman、JMeter 者优先",
+      "kind": "nice"
+    },
+    {
+      "text": "具备良好的沟通能力与团队协作意识",
+      "kind": "must"
+    }
+  ]
+}

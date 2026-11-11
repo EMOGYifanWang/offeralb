@@ -1,0 +1,46 @@
+{
+  "tailor": {
+    "headline": "3年智能硬件与App功能测试，能写Python接口脚本",
+    "bullets": [
+      {
+        "original": "负责 5 个版本的回归测试，累计执行用例 1800+，提交缺陷 200+",
+        "rewritten": "负责智能硬件与 App 共 5 个版本的回归测试，累计执行用例 1800+，提交并跟踪缺陷 200+ 至关闭",
+        "reason": "把版本回归、用例执行与缺陷跟踪串成一条完整测试流程，贴合岗位对回归测试和缺陷管理的要求"
+      },
+      {
+        "original": "使用 Python 编写过接口自动化脚本，熟悉 Linux 与抓包工具",
+        "rewritten": "使用 Python 编写接口自动化脚本并维护，熟悉 Linux 常用命令与抓包工具",
+        "reason": "突出脚本编写与 Linux 环境操作，对应岗位的自动化脚本和 Linux 要求"
+      },
+      {
+        "original": "主要做智能硬件与 App 的功能测试",
+        "rewritten": "主要承担智能硬件与 App 的功能测试，依据测试用例设计方法编写并执行用例",
+        "reason": "把功能测试经历与用例设计方法自然衔接，不新增未做过的测试类型"
+      },
+      {
+        "original": "参与过性能测试，用 JMeter 做过并发压测",
+        "rewritten": "参与性能测试，使用 JMeter 完成并发压测",
+        "reason": "保留 JMeter 压测事实，呼应岗位对 JMeter 的优先项"
+      },
+      {
+        "original": "3 年软件测试经验",
+        "rewritten": "3 年软件测试经验，覆盖智能硬件与 App 的功能、回归及接口自动化测试",
+        "reason": "用已有经历概括经验年限与测试范围，作为整体定位"
+      }
+    ],
+    "warnings": [
+      "简历未体现兼容性测试经历，JD 明确要求该能力",
+      "简历未提及 Postman，接口测试工具证据仅有 Python 脚本",
+      "简历未体现沟通协作或团队协作的具体事例"
+    ]
+  },
+  "audit": {
+    "fabricated": [],
+    "fabricatedSkills": []
+  },
+  "meta": {
+    "model": "deepseek-chat",
+    "promptVersion": "tailor.v3",
+    "durationMs": 2568
+  }
+}

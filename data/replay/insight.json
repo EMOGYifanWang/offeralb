@@ -1,0 +1,87 @@
+{
+  "insight": {
+    "verdict": "测试经验扎实，接口与缺陷管理证据不足",
+    "strengths": [
+      {
+        "point": "测试执行经验丰富且有量化结果",
+        "evidence": "负责 5 个版本的回归测试，累计执行用例 1800+，提交缺陷 200+"
+      },
+      {
+        "point": "具备 Python 自动化脚本能力",
+        "evidence": "使用 Python 编写过接口自动化脚本"
+      },
+      {
+        "point": "熟悉 Linux 与抓包工具",
+        "evidence": "熟悉 Linux 与抓包工具"
+      },
+      {
+        "point": "有 JMeter 性能测试实践",
+        "evidence": "参与过性能测试，用 JMeter 做过并发压测"
+      }
+    ],
+    "gaps": [
+      {
+        "term": "兼容性测试",
+        "level": "none",
+        "reason": "简历未提及兼容性测试相关经历",
+        "action": "今天",
+        "suggestion": "若实际做过多机型或多系统适配验证，补一句具体机型与系统覆盖情况"
+      },
+      {
+        "term": "接口测试",
+        "level": "weak",
+        "reason": "仅提到「使用 Python 编写过接口自动化脚本」，未说明接口测试范围与结果",
+        "action": "今天",
+        "suggestion": "补充接口测试的对象、用例数量与发现缺陷情况"
+      },
+      {
+        "term": "缺陷管理",
+        "level": "weak",
+        "reason": "提到「提交缺陷 200+」，但未体现缺陷跟踪至关闭的流程",
+        "action": "今天",
+        "suggestion": "补充缺陷从提交、跟踪到关闭的流程与使用的管理工具"
+      },
+      {
+        "term": "Postman",
+        "level": "none",
+        "reason": "简历未提及 Postman",
+        "action": "一周",
+        "suggestion": "用 Postman 完成一个小型接口测试集并写入简历"
+      },
+      {
+        "term": "测试用例设计方法",
+        "level": "weak",
+        "reason": "提到「执行用例 1800+」，但未体现用例设计方法与设计工作",
+        "action": "今天",
+        "suggestion": "补充用例设计方法（如等价类、边界值）及独立设计的用例数量"
+      },
+      {
+        "term": "沟通与团队协作",
+        "level": "weak",
+        "reason": "简历未提及协作对象或跨团队配合的具体事实",
+        "action": "今天",
+        "suggestion": "补充与开发、硬件团队协作推动缺陷修复的具体事例"
+      }
+    ],
+    "semanticHits": [
+      {
+        "requirement": "智能硬件产品的功能测试",
+        "evidence": "主要做智能硬件与 App 的功能测试"
+      },
+      {
+        "requirement": "自动化测试脚本的编写与维护",
+        "evidence": "使用 Python 编写过接口自动化脚本"
+      },
+      {
+        "requirement": "2 年以上软件测试经验",
+        "evidence": "3 年软件测试经验"
+      }
+    ]
+  },
+  "meta": {
+    "model": "deepseek-chat",
+    "promptVersion": "analyze.v2",
+    "attempt": 1,
+    "durationMs": 3142
+  }
+}
