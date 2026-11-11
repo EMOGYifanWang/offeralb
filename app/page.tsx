@@ -59,16 +59,18 @@ export default function Home() {
       <header className="sticky top-0 z-10 border-b border-neutral-200/70 bg-[#fbfbfa]/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <span className="text-xs font-medium tracking-[0.2em] text-neutral-800">OFFERLAB</span>
-          <nav className="flex items-center gap-5 text-xs text-neutral-600">
-            <a href="#analyze" className="transition hover:text-neutral-900">
-              分析
-            </a>
-            <a href="#tailor" className="transition hover:text-neutral-900">
-              定制
-            </a>
-            <a href="#prep" className="transition hover:text-neutral-900">
-              面试
-            </a>
+          <nav className="flex items-center gap-4 text-xs text-neutral-600">
+            <div className="hidden items-center gap-5 sm:flex">
+              <a href="#analyze" className="transition hover:text-neutral-900">
+                分析
+              </a>
+              <a href="#tailor" className="transition hover:text-neutral-900">
+                定制
+              </a>
+              <a href="#prep" className="transition hover:text-neutral-900">
+                面试
+              </a>
+            </div>
             <Link href="/demo" className="rounded-md bg-neutral-900 px-3 py-1.5 text-white">
               看示例
             </Link>
@@ -78,7 +80,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-20">
         <p className="text-xs font-medium tracking-[0.2em] text-neutral-400">求职工作台 · 开源</p>
-        <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.15] tracking-tight text-neutral-900 sm:text-5xl">
+        <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-[1.15] tracking-tight text-neutral-900 sm:text-5xl">
           给一个 JD，
           <br />
           出一版能投的简历。

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-11T07:42:54.038Z",
-  "commit": "0540a52",
+  "generatedAt": "2026-11-11T07:50:43.676Z",
+  "commit": "8f03861",
   "mode": "offline+live",
   "dataset": {
     "cases": 6,
@@ -11,7 +11,7 @@
     "keyword_recall": 1,
     "coverage_median": 0.584,
     "schema_valid_rate": 1,
-    "time_per_job_ms": 5981,
+    "time_per_job_ms": 5829,
     "fabrication_flags": 0
   },
   "perCase": [

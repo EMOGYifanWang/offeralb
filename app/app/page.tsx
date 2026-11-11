@@ -105,17 +105,19 @@ export default function AnalyzePage() {
         <Link href="/" className="text-xs font-medium tracking-[0.2em] text-neutral-500">
           OFFERLAB
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <Link href="/app/tailor" className="text-xs text-neutral-500 transition hover:text-neutral-900">
             定制简历 →
           </Link>
           <Link href="/app/prep" className="text-xs text-neutral-500 transition hover:text-neutral-900">
             准备面试 →
           </Link>
+          <Link href="/app/jobs" className="text-xs text-neutral-500 transition hover:text-neutral-900">
+            投递看板 →
+          </Link>
           <Link href="/app/eval" className="text-xs text-neutral-500 transition hover:text-neutral-900">
             评测 →
           </Link>
-          <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
         </div>
       </div>
 
