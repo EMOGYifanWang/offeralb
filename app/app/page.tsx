@@ -107,7 +107,10 @@ export default function AnalyzePage() {
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/app/tailor" className="text-xs text-neutral-500 transition hover:text-neutral-900">
-            去定制简历 →
+            定制简历 →
+          </Link>
+          <Link href="/app/prep" className="text-xs text-neutral-500 transition hover:text-neutral-900">
+            准备面试 →
           </Link>
           <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
         </div>

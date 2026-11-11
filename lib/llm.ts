@@ -58,6 +58,7 @@ export async function chatJSON(args: {
   system: string;
   user: string;
   timeoutMs?: number;
+  maxTokens?: number;
 }): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), args.timeoutMs ?? 45_000);
@@ -72,7 +73,7 @@ export async function chatJSON(args: {
       body: JSON.stringify({
         model: args.config.model,
         temperature: 0.2,
-        max_tokens: 1200,
+        max_tokens: args.maxTokens ?? 1200,
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: args.system },
@@ -97,10 +98,14 @@ export async function chatJSON(args: {
     }
 
     const data = (await response.json()) as {
-      choices?: { message?: { content?: string } }[];
+      choices?: { message?: { content?: string }; finish_reason?: string }[];
     };
-    const content = data.choices?.[0]?.message?.content;
+    const choice = data.choices?.[0];
+    const content = choice?.message?.content;
     if (!content) throw new LLMError("模型没有返回内容");
+    if (choice?.finish_reason === "length") {
+      throw new LLMError("模型输出被截断：这次要写的内容超过了 max_tokens，减少题目数量或调大上限");
+    }
     return content;
   } catch (error) {
     if (error instanceof LLMError) throw error;
