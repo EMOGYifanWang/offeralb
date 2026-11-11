@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-11-11T07:42:54.038Z",
+  "commit": "0540a52",
+  "mode": "offline+live",
+  "dataset": {
+    "cases": 6,
+    "liveCases": 3
+  },
+  "metrics": {
+    "keyword_precision": 1,
+    "keyword_recall": 1,
+    "coverage_median": 0.584,
+    "schema_valid_rate": 1,
+    "time_per_job_ms": 5981,
+    "fabrication_flags": 0
+  },
+  "perCase": [
+    {
+      "id": "qa-iot",
+      "title": "测试工程师 · 智能硬件",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0.667,
+      "extracted": [
+        "兼容性测试",
+        "接口测试",
+        "缺陷管理",
+        "测试用例",
+        "功能测试",
+        "回归测试",
+        "自动化测试",
+        "linux",
+        "python"
+      ],
+      "missed": [],
+      "extra": []
+    },
+    {
+      "id": "qa-web",
+      "title": "测试工程师 · Web 平台",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0.5,
+      "extracted": [
+        "接口测试",
+        "缺陷管理",
+        "sql",
+        "测试用例",
+        "功能测试",
+        "linux"
+      ],
+      "missed": [],
+      "extra": []
+    },
+    {
+      "id": "be-order",
+      "title": "后端工程师 · 订单交易",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0.889,
+      "extracted": [
+        "服务治理",
+        "分布式",
+        "事务",
+        "索引",
+        "微服务",
+        "java",
+        "kafka",
+        "mysql",
+        "redis"
+      ],
+      "missed": [],
+      "extra": []
+    },
+    {
+      "id": "be-platform",
+      "title": "后端工程师 · 基础平台",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0.375,
+      "extracted": [
+        "服务治理",
+        "数据库",
+        "消息队列",
+        "linux",
+        "sql",
+        "缓存",
+        "微服务",
+        "java"
+      ],
+      "missed": [],
+      "extra": []
+    },
+    {
+      "id": "fe-b",
+      "title": "前端工程师 · B 端后台",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0.8,
+      "extracted": [
+        "css",
+        "组件库",
+        "react",
+        "typescript",
+        "webpack"
+      ],
+      "missed": [],
+      "extra": []
+    },
+    {
+      "id": "de-etl",
+      "title": "数据工程师 · 离线数仓",
+      "precision": 1,
+      "recall": 1,
+      "coverage": 0,
+      "extracted": [
+        "调度",
+        "数据仓库",
+        "etl",
+        "sql"
+      ],
+      "missed": [],
+      "extra": []
+    }
+  ],
+  "model": "deepseek-chat"
+}

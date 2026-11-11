@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "eval": "node --experimental-strip-types scripts/eval.ts"
+    "eval": "tsx eval/run.ts",
+    "eval:live": "tsx eval/run.ts --live"
   },
   "dependencies": {
     "next": "^15.3.0",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^19.0.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.1.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   }

@@ -112,6 +112,9 @@ export default function AnalyzePage() {
           <Link href="/app/prep" className="text-xs text-neutral-500 transition hover:text-neutral-900">
             准备面试 →
           </Link>
+          <Link href="/app/eval" className="text-xs text-neutral-500 transition hover:text-neutral-900">
+            评测 →
+          </Link>
           <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
         </div>
       </div>
