@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Analysis, Term } from "@/lib/analyze";
 import type { Insight } from "@/lib/insight";
 import { SAMPLE_JD, SAMPLE_RESUME } from "@/lib/samples";
@@ -46,6 +46,12 @@ export default function AnalyzePage() {
   } | null>(null);
   const [insightLoading, setInsightLoading] = useState(false);
   const [insightError, setInsightError] = useState("");
+
+  // 从投递看板的「去分析」带过来的 JD，直接填好，省一次复制粘贴。
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("jd");
+    if (param) setJd(param);
+  }, []);
 
   function resetInsight() {
     setInsight(null);

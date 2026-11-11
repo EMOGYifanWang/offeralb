@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { buildBookmarklet, parseImport, scoreMatch } from "@/lib/collect";
 
 type Status = "待投" | "已投" | "已读" | "邀约" | "一面" | "二面" | "Offer" | "拒信";
 
@@ -14,10 +15,12 @@ type Application = {
   appliedAt: string;
   nextAt: string;
   note: string;
+  jd?: string;
+  url?: string;
 };
 
 const STATUSES: Status[] = ["待投", "已投", "已读", "邀约", "一面", "二面", "Offer", "拒信"];
-const CHANNELS = ["Boss直聘", "猎聘", "智联", "前程无忧", "内推", "官网", "其他"];
+const CHANNELS = ["Boss直聘", "猎聘", "智联", "前程无忧", "内推", "官网", "采集", "其他"];
 const STORAGE_KEY = "offeralb.applications.v1";
 
 const SEED: Application[] = [
@@ -67,6 +70,10 @@ export default function JobsPage() {
   const [items, setItems] = useState<Application[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [filter, setFilter] = useState<Status | "全部">("全部");
+  const [query, setQuery] = useState("");
+  const [bookmarklet, setBookmarklet] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [imported, setImported] = useState("");
 
   const [company, setCompany] = useState("");
   const [title, setTitle] = useState("");
@@ -76,12 +83,38 @@ export default function JobsPage() {
   const [nextAt, setNextAt] = useState("");
 
   useEffect(() => {
+    setBookmarklet(buildBookmarklet(window.location.origin));
+
+    let base: Application[] = SEED;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      setItems(raw ? (JSON.parse(raw) as Application[]) : SEED);
+      if (raw) base = JSON.parse(raw) as Application[];
     } catch {
-      setItems(SEED);
+      base = SEED;
     }
+
+    const job = parseImport(window.location.hash);
+    if (job) {
+      base = [
+        {
+          id: `collected-${Date.now()}`,
+          company: job.company || "待补充公司",
+          title: job.title || "待补充岗位",
+          channel: "采集",
+          status: "待投",
+          appliedAt: today(),
+          nextAt: "",
+          note: "",
+          jd: job.jd,
+          url: job.url,
+        },
+        ...base,
+      ];
+      window.history.replaceState(null, "", window.location.pathname);
+      setImported(job.title || "已采集");
+    }
+
+    setItems(base);
     setLoaded(true);
   }, []);
 
@@ -92,17 +125,19 @@ export default function JobsPage() {
 
   function add() {
     if (!company.trim() || !title.trim()) return;
-    const next: Application = {
-      id: `${Date.now()}`,
-      company: company.trim(),
-      title: title.trim(),
-      channel,
-      status,
-      appliedAt,
-      nextAt,
-      note: "",
-    };
-    setItems((prev) => [next, ...prev]);
+    setItems((prev) => [
+      {
+        id: `${Date.now()}`,
+        company: company.trim(),
+        title: title.trim(),
+        channel,
+        status,
+        appliedAt,
+        nextAt,
+        note: "",
+      },
+      ...prev,
+    ]);
     setCompany("");
     setTitle("");
     setNextAt("");
@@ -116,19 +151,37 @@ export default function JobsPage() {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }
 
+  async function copyBookmarklet() {
+    try {
+      await navigator.clipboard.writeText(bookmarklet);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }
+
   const stats = useMemo(() => {
     const active = items.filter((i) => !["Offer", "拒信"].includes(i.status)).length;
     const interviewing = items.filter((i) => ["邀约", "一面", "二面"].includes(i.status)).length;
-    const offers = items.filter((i) => i.status === "Offer").length;
     const overdue = items.filter(isOverdue).length;
-    return { total: items.length, active, interviewing, offers, overdue };
+    const collected = items.filter((i) => i.jd).length;
+    return { total: items.length, active, interviewing, overdue, collected };
   }, [items]);
 
-  const visible = filter === "全部" ? items : items.filter((i) => i.status === filter);
+  const visible = useMemo(() => {
+    const byStatus = filter === "全部" ? items : items.filter((i) => i.status === filter);
+    if (!query.trim()) return byStatus;
+    return byStatus
+      .map((item) => ({ item, score: scoreMatch(query, [item.company, item.title, item.jd ?? "", item.note]) }))
+      .filter((row) => row.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((row) => row.item);
+  }, [items, filter, query]);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Link href="/app" className="text-xs font-medium tracking-[0.2em] text-neutral-500">
           OFFERLAB
         </Link>
@@ -137,8 +190,14 @@ export default function JobsPage() {
 
       <h1 className="mt-6 text-2xl font-semibold tracking-tight sm:mt-8">投了哪些，下一步做什么</h1>
       <p className="mt-2 text-sm text-neutral-500">
-        记录存在 localStorage，不上传服务器。换浏览器或清缓存会丢，重要数据自己导出。
+        记录和采集的 JD 都存在 localStorage，不上传服务器。换浏览器或清缓存会丢。
       </p>
+
+      {imported && (
+        <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+          已采集：{imported}，可以点「去分析」直接看匹配度。
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
@@ -153,6 +212,40 @@ export default function JobsPage() {
           </div>
         ))}
       </div>
+
+      <details className="mt-6 rounded-xl border border-neutral-200 p-4">
+        <summary className="cursor-pointer list-none text-sm font-medium text-neutral-800">
+          一键采集 JD
+          <span className="ml-2 text-xs font-normal text-neutral-400">
+            已采集 {stats.collected} 条 · 点开看怎么装
+          </span>
+        </summary>
+        <div className="mt-3 space-y-3 text-xs leading-relaxed text-neutral-600">
+          <p>
+            把下面的按钮拖到浏览器书签栏（或复制内容，新建一个书签，地址粘贴进去）。看到中意的岗位时点一下，
+            它会把标题、正文和链接带回这里，自动存成「待投」。
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={bookmarklet}
+              draggable
+              onClick={(e) => e.preventDefault()}
+              className="inline-block cursor-grab rounded-lg border border-neutral-900 bg-neutral-900 px-4 py-2 text-xs font-medium text-white"
+            >
+              拖我到书签栏
+            </a>
+            <button
+              onClick={copyBookmarklet}
+              className="rounded-lg border border-neutral-200 px-4 py-2 text-xs text-neutral-700 transition hover:border-neutral-400"
+            >
+              {copied ? "已复制" : "复制采集器代码"}
+            </button>
+          </div>
+          <p className="text-neutral-400">
+            只在你自己点开的那一页抓当前这一条，不遍历列表、不复用登录态、不绕验证码。抓不到正文时会提示，不会静默失败。
+          </p>
+        </div>
+      </details>
 
       <div className="mt-6 rounded-xl border border-neutral-200 p-4">
         <div className="grid gap-2 sm:grid-cols-12">
@@ -216,7 +309,17 @@ export default function JobsPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-1.5">
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="搜公司、岗位或 JD 正文…"
+          className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-neutral-400 sm:w-72"
+        />
+        {query && <span className="text-xs text-neutral-500">命中 {visible.length} 条</span>}
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
         {(["全部", ...STATUSES] as const).map((s) => (
           <button
             key={s}
@@ -234,12 +337,10 @@ export default function JobsPage() {
       </div>
 
       <div className="mt-4 divide-y divide-neutral-100 border-t border-neutral-100">
-        {visible.length === 0 && (
-          <p className="py-10 text-center text-sm text-neutral-400">这一栏还是空的</p>
-        )}
+        {visible.length === 0 && <p className="py-10 text-center text-sm text-neutral-400">没有匹配的记录</p>}
         {visible.map((item) => (
           <div key={item.id} className="grid gap-2 py-4 sm:grid-cols-12 sm:items-center">
-            <div className="sm:col-span-4">
+            <div className="sm:col-span-3">
               <p className="text-sm font-medium text-neutral-900">{item.company}</p>
               <p className="text-xs text-neutral-500">{item.title}</p>
             </div>
@@ -269,11 +370,29 @@ export default function JobsPage() {
                 }`}
               />
             </div>
-            <div className="flex items-center justify-between sm:col-span-2 sm:justify-end sm:gap-3">
-              {isOverdue(item) && <span className="text-[11px] text-rose-600">该跟进了</span>}
+            <div className="flex flex-wrap items-center gap-3 text-xs sm:col-span-3 sm:justify-end">
+              {item.jd && (
+                <a
+                  href={`/app?jd=${encodeURIComponent(item.jd)}`}
+                  className="text-neutral-600 underline-offset-2 hover:text-neutral-900 hover:underline"
+                >
+                  去分析
+                </a>
+              )}
+              {item.url && (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-neutral-500 hover:text-neutral-800"
+                >
+                  原链接
+                </a>
+              )}
+              {isOverdue(item) && <span className="text-rose-600">该跟进了</span>}
               <button
                 onClick={() => remove(item.id)}
-                className="text-xs text-neutral-400 transition hover:text-rose-600"
+                className="text-neutral-400 transition hover:text-rose-600"
               >
                 删除
               </button>
