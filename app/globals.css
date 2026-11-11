@@ -9,3 +9,13 @@ body {
   color: #171717;
   -webkit-font-smoothing: antialiased;
 }
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  body {
+    background: #ffffff;
+  }
+}

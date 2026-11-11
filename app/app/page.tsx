@@ -4,22 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Analysis, Term } from "@/lib/analyze";
 import type { Insight } from "@/lib/insight";
-
-const SAMPLE_JD = `岗位职责：
-1. 负责智能硬件产品的功能测试、兼容性测试与回归测试；
-2. 编写测试用例并执行，跟踪缺陷直至关闭；
-3. 参与自动化测试脚本的编写与维护。
-任职要求：
-1. 本科及以上学历，2 年以上软件测试经验；
-2. 熟悉测试用例设计方法，掌握缺陷管理流程；
-3. 熟悉 Linux 常用命令，能使用 Python 编写简单脚本；
-4. 有接口测试经验，了解 Postman、JMeter 者优先；
-5. 具备良好的沟通能力与团队协作意识。`;
-
-const SAMPLE_RESUME = `张伟，3 年软件测试经验，主要做智能硬件与 App 的功能测试。
-负责 5 个版本的回归测试，累计执行用例 1800+，提交缺陷 200+。
-使用 Python 编写过接口自动化脚本，熟悉 Linux 与抓包工具。
-参与过性能测试，用 JMeter 做过并发压测。`;
+import { SAMPLE_JD, SAMPLE_RESUME } from "@/lib/samples";
 
 function Chip({ term, tone }: { term: Term; tone: "ok" | "miss" | "nice" }) {
   const styles = {
@@ -120,7 +105,12 @@ export default function AnalyzePage() {
         <Link href="/" className="text-xs font-medium tracking-[0.2em] text-neutral-500">
           OFFERLAB
         </Link>
-        <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
+        <div className="flex items-center gap-4">
+          <Link href="/app/tailor" className="text-xs text-neutral-500 transition hover:text-neutral-900">
+            去定制简历 →
+          </Link>
+          <span className="text-xs text-neutral-400">W2 · 关键词 + 模型解读</span>
+        </div>
       </div>
 
       <h1 className="mt-8 text-2xl font-semibold tracking-tight">粘贴 JD，先看清缺口</h1>
